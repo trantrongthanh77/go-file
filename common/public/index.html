@@ -20,10 +20,10 @@
                                 <div class="content">
                                     <div class="page-card-title" style="color: #AAAAAA;" id="imageUploadStatus">
                                         {{if .isQuery}}
-                                        无匹配文件
+                                        No matching files
                                         {{else}}
-                                        当前无任何文件，请点击 <a class="button is-light" onclick="showUploadModal()">上传</a>
-                                        按钮以上传文件.
+                                        There are currently no files, please click <a class="button is-light" onclick="showUploadModal()">upload</a>
+                                        button to upload files.
                                         {{end}}
                                     </div>
                                 </div>
@@ -46,12 +46,12 @@
                                 <span class="tag is-light">{{$file.Uploader}}</span>
                                 <span class="tag is-light">{{$file.Time}}</span>
                                 <span class="tag is-light"
-                                      id="counter-{{$file.Id}}">{{$file.DownloadCounter}} 次下载</span>
+                                      id="counter-{{$file.Id}}">{{$file.DownloadCounter}} downloads</span>
                                 <div class="page-card-text">
                                     {{if $file.Description}}
                                     {{$file.Description}}
                                     {{else}}
-                                    无描述信息
+                                    No description information
                                     {{end}}
                                 </div>
                                 <div class="actions">
@@ -80,8 +80,8 @@
                 {{end}}
             </div>
             <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-                <a class="pagination-previous shadow" href="/?p={{.prev}}">上一页</a>
-                <a class="pagination-next shadow" href="/?p={{.next}}">下一页</a>
+                <a class="pagination-previous shadow" href="/?p={{.prev}}">Previous page</a>
+                <a class="pagination-next shadow" href="/?p={{.next}}">Next page</a>
             </nav>
         </div>
     </div>

@@ -16,17 +16,17 @@
         </div>
         <div id="mainNavbar" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item" href="/"> 首页 </a>
-                <a class="navbar-item" href="/explorer"> 文件 </a>
-                <a class="navbar-item" href="/image"> 图床 </a>
-                <a class="navbar-item" href="/video"> 视频 </a>
-                <a class="navbar-item" href="/help"> 帮助 </a>
+                <a class="navbar-item" href="/"> front page </a>
+                <a class="navbar-item" href="/explorer"> document </a>
+                <a class="navbar-item" href="/image"> picture </a>
+                <a class="navbar-item" href="/video"> video </a>
+                <a class="navbar-item" href="/help"> help </a>
             </div>
             <div class="navbar-end">
                 <div class="navbar-item" >
                     <p class="control is-expanded is-light flex-grow">
                         <input class="input flex-grow" type="search" id="searchInput" autocomplete="nope"
-                               autofocus="" style="cursor: text;" placeholder="搜索文件..."/>
+                               autofocus="" style="cursor: text;" placeholder="Search files..."/>
                     </p>
                     <script>
                         const input = document.getElementById("searchInput");
@@ -45,9 +45,9 @@
                 </div>
                 <div class="navbar-item">
                     <div class="buttons">
-                        <a class="button is-light" onclick="showUploadModal()">上传</a>
+                        <a class="button is-light" onclick="showUploadModal()">Upload</a>
                         {{if not $.username}}
-                        <a class="button is-light" href="/login">登录</a>
+                        <a class="button is-light" href="/login">Login</a>
                         {{end}}
                     </div>
                 </div>
@@ -58,14 +58,14 @@
                     </a>
                     <div class="navbar-dropdown">
                         <a class="navbar-item" href="/manage">
-                            系统管理
+                            System Management
                         </a>
                         <a class="navbar-item" href="https://github.com/songquanpeng/go-file#readme" target="_blank">
-                            项目地址
+                            Project address
                         </a>
                         <hr class="navbar-divider">
                         <a class="navbar-item" href="/logout">
-                            退出登录
+                            Sign out
                         </a>
                     </div>
                 </div>
