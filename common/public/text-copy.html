@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>复制文本文件内容 —— Go File</title>
+    <title>Copy text file contents —— Go File</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -49,12 +49,12 @@
             document.execCommand("copy");
             // update prompt
             var copyBtn = document.querySelector("#copyBtn");
-            copyBtn.innerText = "已复制";
+            copyBtn.innerText = "Copied";
         }
     </script>
 </head>
 <body>
-<textarea id="myTextarea" placeholder="文件内容为空">{{.content}}</textarea>
-<button id="copyBtn" onclick="copyText()">复制</button>
+<textarea id="myTextarea" placeholder="The file content is empty">{{.content}}</textarea>
+<button id="copyBtn" onclick="copyText()">Copy</button>
 </body>
 </html>
