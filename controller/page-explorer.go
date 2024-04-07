@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"go-file/common"
 	"go-file/model"
 	"io/ioutil"
@@ -25,7 +24,7 @@ func GetExplorerPageOrFile(c *gin.Context) {
 	if !strings.HasPrefix(fullPath, common.ExplorerRootPath) {
 		// We may being attacked!
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  fmt.Sprintf("Only subdirectories of the specified folder can be accessed"),
+			"message":  "Only subdirectories of the specified folder can be accessed",
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})
