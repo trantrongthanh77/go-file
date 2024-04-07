@@ -9,6 +9,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/gorm v1.9.12
+	github.com/kelseyhightower/envconfig v1.4.0
 )
 
 require (

@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
+	"go-file/common"
+	"go-file/common/config"
+	"go-file/model"
+	"go-file/router"
+	"html/template"
+	"log"
+	"strconv"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"go-file/common"
-	"go-file/model"
-	"go-file/router"
-	"html/template"
-	"os"
-	"strconv"
 )
 
 func loadTemplate() *template.Template {
@@ -24,9 +26,14 @@ func loadTemplate() *template.Template {
 }
 
 func main() {
-	common.SetupGinLog()
-	common.SysLog(fmt.Sprintf("Go File %s started at port %d", common.Version, *common.Port))
-	if os.Getenv("GIN_MODE") != "debug" {
+	conf, err := buildConfig()
+	if err != nil {
+		log.Fatalf("failed to build config: %v", err)
+	}
+	common.InitConfig(conf)
+	common.SetupGinLog(conf)
+	common.SysLog(fmt.Sprintf("Go File %s started at port %d", common.Version, conf.Port))
+	if conf.GinMode != "debug" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// Initialize SQL Database
@@ -42,7 +49,7 @@ func main() {
 	}(db)
 
 	// Initialize Redis
-	err = common.InitRedisClient()
+	err = common.InitRedisClient(conf)
 	if err != nil {
 		common.FatalLog(err)
 	}
@@ -57,7 +64,7 @@ func main() {
 	// Initialize session store
 	var store sessions.Store
 	if common.RedisEnabled {
-		opt := common.ParseRedisOption()
+		opt := common.ParseRedisOption(conf)
 		store, _ = redis.NewStore(opt.MinIdleConns, opt.Network, opt.Addr, opt.Password, []byte(common.SessionSecret))
 	} else {
 		store = cookie.NewStore([]byte(common.SessionSecret))
@@ -67,28 +74,30 @@ func main() {
 	})
 	server.Use(sessions.Sessions("session", store))
 
-	router.SetRouter(server)
-	var realPort = os.Getenv("PORT")
-	if realPort == "" {
-		realPort = strconv.Itoa(*common.Port)
-	}
-	if *common.Host == "" {
+	router.SetRouter(server, conf)
+	if conf.Host == "" {
 		ip := common.GetIp()
 		if ip != "" {
-			*common.Host = ip
-		} else {
-			*common.Host = "localhost"
+			conf.Host = ip
 		}
 	}
-	serverUrl := "http://" + *common.Host + ":" + realPort + "/"
-	if !*common.NoBrowser {
+	strPort := strconv.Itoa(conf.Port)
+	serverUrl := fmt.Sprintf("http://%s:%s/", conf.Host, strPort)
+	if !conf.Nobrowser {
 		common.OpenBrowser(serverUrl)
 	}
-	if *common.EnableP2P {
-		go common.StartP2PServer()
+	if conf.Enablep2p {
+		go common.StartP2PServer(conf)
 	}
-	err = server.Run(":" + realPort)
+	err = server.Run(":" + strPort)
 	if err != nil {
 		common.FatalLog(err)
 	}
+}
+
+func buildConfig() (*config.Config, error) {
+	c := &config.Config{}
+	return c, c.ApplyConfig(
+		config.FromEnv,
+	)
 }

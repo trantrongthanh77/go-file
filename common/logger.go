@@ -2,18 +2,20 @@ package common
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"go-file/common/config"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-func SetupGinLog() {
-	if *LogDir != "" {
-		commonLogPath := filepath.Join(*LogDir, "common.log")
-		errorLogPath := filepath.Join(*LogDir, "error.log")
+func SetupGinLog(conf *config.Config) {
+	if conf.LogDir != "" {
+		commonLogPath := filepath.Join(conf.LogDir, "common.log")
+		errorLogPath := filepath.Join(conf.LogDir, "error.log")
 		commonFd, err := os.OpenFile(commonLogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatal("failed to open log file")

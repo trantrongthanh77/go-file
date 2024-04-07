@@ -2,16 +2,18 @@ package common
 
 import (
 	"context"
-	"github.com/go-redis/redis/v8"
+	"go-file/common/config"
 	"os"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 var RDB *redis.Client
 var RedisEnabled = true
 
 // InitRedisClient This function is called after init()
-func InitRedisClient() (err error) {
+func InitRedisClient(conf *config.Config) (err error) {
 	if os.Getenv("REDIS_CONN_STRING") == "" {
 		RedisEnabled = false
 		// The cache depends on Redis
@@ -20,7 +22,7 @@ func InitRedisClient() (err error) {
 		StatEnabled = false
 		return nil
 	}
-	opt, err := redis.ParseURL(os.Getenv("REDIS_CONN_STRING"))
+	opt, err := redis.ParseURL(conf.RedisConnectionString)
 	if err != nil {
 		panic(err)
 	}
@@ -33,8 +35,8 @@ func InitRedisClient() (err error) {
 	return err
 }
 
-func ParseRedisOption() *redis.Options {
-	opt, err := redis.ParseURL(os.Getenv("REDIS_CONN_STRING"))
+func ParseRedisOption(conf *config.Config) *redis.Options {
+	opt, err := redis.ParseURL(conf.RedisConnectionString)
 	if err != nil {
 		panic(err)
 	}

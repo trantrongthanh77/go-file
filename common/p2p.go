@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/binary"
 	"fmt"
+	"go-file/common/config"
 	"math/rand"
 	"net"
 	"strconv"
@@ -66,12 +67,12 @@ func sendConnPackets(server *net.UDPConn, senderAddr *net.UDPAddr, receiverAddr 
 	}
 }
 
-func StartP2PServer() {
-	server, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: *P2PPort})
+func StartP2PServer(conf *config.Config) {
+	server, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.IPv4zero, Port: conf.P2PPort})
 	if err != nil {
 		P2pLog("failed to start p2p server")
 	}
-	P2pLog(fmt.Sprintf("p2p server started at port %d", *P2PPort))
+	P2pLog(fmt.Sprintf("p2p server started at port %d", conf.P2PPort))
 	buffer := make([]byte, bufferSize)
 	id2addr = make(map[uint64]net.UDPAddr)
 	for {
