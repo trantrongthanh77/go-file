@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"io/ioutil"
@@ -14,6 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetExplorerPageOrFile(c *gin.Context) {
@@ -24,7 +25,7 @@ func GetExplorerPageOrFile(c *gin.Context) {
 	if !strings.HasPrefix(fullPath, common.ExplorerRootPath) {
 		// We may being attacked!
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  fmt.Sprintf("只能访问指定文件夹的子目录"),
+			"message":  fmt.Sprintf("Only subdirectories of the specified folder can be accessed"),
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})
@@ -33,7 +34,7 @@ func GetExplorerPageOrFile(c *gin.Context) {
 	root, err := os.Stat(fullPath)
 	if err != nil {
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  "处理路径时发生了错误，请确认路径正确",
+			"message":  "An error occurred while processing the path, please confirm that the path is correct",
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})

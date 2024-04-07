@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"mime/multipart"
@@ -13,6 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type FileDeleteRequest struct {
@@ -47,7 +48,7 @@ func UploadFile(c *gin.Context) {
 	description := c.PostForm("description")
 	uploader := c.GetString("username")
 	if uploader == "" {
-		uploader = "匿名用户"
+		uploader = "Anonymous User"
 	}
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	form, err := c.MultipartForm()
@@ -92,7 +93,7 @@ func UploadFile(c *gin.Context) {
 		}
 		if createTextFile {
 			// Create a new text file and then write the description to it.
-			filename = "文本分享"
+			filename = "Text sharing"
 			f, err := os.Create(savePath)
 			if err != nil {
 				message := "failed to create file: " + err.Error()
@@ -109,7 +110,7 @@ func UploadFile(c *gin.Context) {
 			}
 			descriptionRune := []rune(description)
 			if len(descriptionRune) > common.AbstractTextLength {
-				description = fmt.Sprintf("内容摘要：%s...", string(descriptionRune[:common.AbstractTextLength]))
+				description = fmt.Sprintf("Abstract: %s...", string(descriptionRune[:common.AbstractTextLength]))
 			}
 		} else {
 			if err := c.SaveUploadedFile(file, savePath); err != nil {
@@ -143,7 +144,7 @@ func DeleteFile(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
-			"message": "无效的参数",
+			"message": "Invalid parameter",
 		})
 		return
 	}
@@ -159,7 +160,7 @@ func DeleteFile(c *gin.Context) {
 			"message": err.Error(),
 		})
 	} else {
-		message := "文件删除成功"
+		message := "File deleted successfully"
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
 			"message": message,

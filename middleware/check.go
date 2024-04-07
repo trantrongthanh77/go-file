@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"net/http"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 func permissionCheckHelper(c *gin.Context, requiredPermission int) {
@@ -25,7 +26,7 @@ func permissionCheckHelper(c *gin.Context, requiredPermission int) {
 			role = user.Role
 			c.Set("username", username)
 		} else {
-			c.Set("username", "访客用户")
+			c.Set("username", "Guest user")
 		}
 	}
 	if requiredPermission == common.RoleGuestUser {
@@ -35,14 +36,14 @@ func permissionCheckHelper(c *gin.Context, requiredPermission int) {
 	if role == nil || role.(int) < requiredPermission {
 		if c.Request.URL.Path == "/explorer" {
 			c.HTML(http.StatusForbidden, "error.html", gin.H{
-				"message":  "无权访问此页面，请检查你是否登录或者是否有相关权限",
+				"message":  "You do not have permission to access this page, please check whether you are logged in or have relevant permissions",
 				"option":   common.OptionMap,
 				"username": c.GetString("username"),
 			})
 		} else {
 			c.JSON(http.StatusForbidden, gin.H{
 				"success": false,
-				"message": "无权进行此操作，请检查你是否登录或者是否有相关权限",
+				"message": "You do not have permission to perform this operation. Please check whether you are logged in or have relevant permissions.",
 			})
 		}
 		c.Abort()

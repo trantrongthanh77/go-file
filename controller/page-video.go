@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"io/ioutil"
@@ -11,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetVideoPage(c *gin.Context) {
@@ -21,7 +21,7 @@ func GetVideoPage(c *gin.Context) {
 	if !strings.HasPrefix(rootPath, common.VideoServePath) {
 		// We may being attacked!
 		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  fmt.Sprintf("只能访问指定路径下的文件"),
+			"message":  "Only files under the specified path can be accessed",
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})
@@ -38,7 +38,7 @@ func GetVideoPage(c *gin.Context) {
 	}
 	if root.IsDir() {
 		var videoPath = ""
-		var videoName = "请选择视频进行播放"
+		var videoName = "Please select a video to play"
 		var localFiles []model.LocalFile
 		var tempFiles []model.LocalFile
 		files, err := ioutil.ReadDir(rootPath)
@@ -57,7 +57,7 @@ func GetVideoPage(c *gin.Context) {
 			}
 			parentPath := strings.Join(parts, "/")
 			parentFile := model.LocalFile{
-				Name:         "上级目录",
+				Name:         "Parent directory",
 				Link:         "video?path=" + url.QueryEscape(parentPath),
 				Size:         "",
 				IsFolder:     true,

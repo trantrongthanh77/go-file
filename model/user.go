@@ -1,8 +1,9 @@
 package model
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"strings"
+
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 type User struct {
@@ -16,20 +17,17 @@ type User struct {
 }
 
 func (user *User) Insert() error {
-	var err error
-	err = DB.Create(user).Error
+	err := DB.Create(user).Error
 	return err
 }
 
 func (user *User) Update() error {
-	var err error
-	err = DB.Model(user).Updates(user).Error
+	err := DB.Model(user).Updates(user).Error
 	return err
 }
 
 func (user *User) Delete() error {
-	var err error
-	err = DB.Delete(user).Error
+	err := DB.Delete(user).Error
 	return err
 }
 

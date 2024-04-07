@@ -2,13 +2,14 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"go-file/common"
 	"go-file/model"
 	"net/http"
 	"strings"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func Login(c *gin.Context) {
@@ -21,7 +22,7 @@ func Login(c *gin.Context) {
 	user.ValidateAndFill()
 	if user.Status != common.UserStatusEnabled {
 		c.HTML(http.StatusForbidden, "login.html", gin.H{
-			"message":  "用户名或密码错误，或者该用户已被封禁",
+			"message":  "The username or password is incorrect, or the user has been banned",
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})
@@ -35,7 +36,7 @@ func Login(c *gin.Context) {
 	err := session.Save()
 	if err != nil {
 		c.HTML(http.StatusForbidden, "login.html", gin.H{
-			"message":  "无法保存会话信息，请重试",
+			"message":  "Unable to save session information, please try again",
 			"option":   common.OptionMap,
 			"username": c.GetString("username"),
 		})
@@ -46,7 +47,6 @@ func Login(c *gin.Context) {
 		redirectUrl = "/"
 	}
 	c.Redirect(http.StatusFound, redirectUrl)
-	return
 }
 
 func Logout(c *gin.Context) {
@@ -62,7 +62,7 @@ func UpdateSelf(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无效的参数",
+			"message": "Invalid parameter",
 		})
 		return
 	}
@@ -85,7 +85,6 @@ func UpdateSelf(c *gin.Context) {
 		"success": true,
 		"message": "",
 	})
-	return
 }
 
 // CreateUser Only admin user can call this, so we can trust it
@@ -97,7 +96,7 @@ func CreateUser(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无效的参数",
+			"message": "Invalid parameter",
 		})
 		return
 	}
@@ -114,7 +113,6 @@ func CreateUser(c *gin.Context) {
 		"success": true,
 		"message": "",
 	})
-	return
 }
 
 type ManageRequest struct {
@@ -130,7 +128,7 @@ func ManageUser(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "无效的参数",
+			"message": "Invalid parameter",
 		})
 		return
 	}
@@ -142,7 +140,7 @@ func ManageUser(c *gin.Context) {
 	if user.Id == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "用户不存在",
+			"message": "User does not exist",
 		})
 		return
 	}
@@ -177,7 +175,6 @@ func ManageUser(c *gin.Context) {
 		"success": true,
 		"message": "",
 	})
-	return
 }
 
 func GenerateNewUserToken(c *gin.Context) {
@@ -188,7 +185,7 @@ func GenerateNewUserToken(c *gin.Context) {
 	if user.Id == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": "用户不存在",
+			"message": "User does not exist",
 		})
 		return
 	}
@@ -208,5 +205,4 @@ func GenerateNewUserToken(c *gin.Context) {
 		"message": "",
 		"data":    user.Token,
 	})
-	return
 }
