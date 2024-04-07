@@ -106,9 +106,9 @@ func InitConfig(conf *config.Config) {
 		ImageUploadPath = path.Join(UploadPath, "images")
 		VideoServePath = UploadPath
 	}
-	if conf.Path != "" {
-		ExplorerRootPath = conf.Path
-	}
+	// if conf.Path != "" {
+	// 	ExplorerRootPath = conf.Path
+	// }
 	if conf.VideoPath != "" {
 		VideoServePath = conf.VideoPath
 	}
