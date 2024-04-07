@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"net/http"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 func WebAuth() func(c *gin.Context) {
@@ -14,7 +15,7 @@ func WebAuth() func(c *gin.Context) {
 		username := session.Get("username")
 		if username == nil {
 			c.HTML(http.StatusForbidden, "login.html", gin.H{
-				"message": "未登录或登录已过期",
+				"message": "Not logged in or your login has expired",
 				"option":  common.OptionMap,
 			})
 			c.Abort()
@@ -57,7 +58,7 @@ func ApiAuth() func(c *gin.Context) {
 			} else {
 				c.JSON(http.StatusForbidden, gin.H{
 					"success": false,
-					"message": "无权进行此操作，未登录或 token 无效",
+					"message": "You do not have permission to perform this operation, you are not logged in or your token is invalid.",
 				})
 				c.Abort()
 				return
@@ -90,7 +91,7 @@ func ApiAdminAuth() func(c *gin.Context) {
 		if role != common.RoleAdminUser {
 			c.JSON(http.StatusForbidden, gin.H{
 				"success": false,
-				"message": "无权进行此操作，未登录或 token 无效，或没有权限",
+				"message": "You do not have permission to perform this operation, you are not logged in or your token is invalid, or you do not have permission.",
 			})
 			c.Abort()
 			return
@@ -108,7 +109,7 @@ func NoTokenAuth() func(c *gin.Context) {
 		if authByToken == "true" {
 			c.JSON(http.StatusForbidden, gin.H{
 				"success": false,
-				"message": "该接口不能使用 token 进行验证",
+				"message": "This interface cannot use token for verification",
 			})
 			c.Abort()
 			return

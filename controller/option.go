@@ -2,10 +2,11 @@ package controller
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/model"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetOptions(c *gin.Context) {
@@ -21,7 +22,6 @@ func GetOptions(c *gin.Context) {
 		"message": "",
 		"data":    options,
 	})
-	return
 }
 
 func GetNotice(c *gin.Context) {
@@ -30,7 +30,6 @@ func GetNotice(c *gin.Context) {
 		"message": "",
 		"data":    common.OptionMap["Notice"],
 	})
-	return
 }
 
 func UpdateOption(c *gin.Context) {
@@ -39,7 +38,7 @@ func UpdateOption(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
-			"message": "无效的参数",
+			"message": "Invalid parameter",
 		})
 		return
 	}
@@ -55,7 +54,6 @@ func UpdateOption(c *gin.Context) {
 		"success": true,
 		"message": "",
 	})
-	return
 }
 
 func GetStatus(c *gin.Context) {
@@ -68,5 +66,4 @@ func GetStatus(c *gin.Context) {
 			"p2p_enabled": *common.EnableP2P,
 		},
 	})
-	return
 }

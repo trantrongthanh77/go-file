@@ -14,8 +14,7 @@ type Option struct {
 
 func AllOption() ([]*Option, error) {
 	var options []*Option
-	var err error
-	err = DB.Find(&options).Error
+	err := DB.Find(&options).Error
 	return options, err
 }
 
@@ -37,7 +36,7 @@ func InitOptionMap() {
 
 func UpdateOption(key string, value string) error {
 	if key == "StatEnabled" && value == "true" && !common.RedisEnabled {
-		return errors.New("未启用 Redis，无法启用统计功能")
+		return errors.New("REDIS IS NOT ENABLED AND STATISTICS FUNCTION CANNOT BE ENABLED")
 	}
 
 	// Save to database first
