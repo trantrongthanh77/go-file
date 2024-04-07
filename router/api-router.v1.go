@@ -1,14 +1,18 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"go-file/common/config"
 	"go-file/controller"
 	"go-file/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
-func setApiRouter(router *gin.Engine) {
+func setApiRouter(router *gin.Engine, conf *config.Config) {
 	router.Use(middleware.GlobalAPIRateLimit())
-	router.GET("/status", controller.GetStatus)
+	router.GET("/status", func(c *gin.Context) {
+		controller.GetStatus(c, conf)
+	})
 	router.POST("/api/file", middleware.FileUploadPermissionCheck(), controller.UploadFile)
 	router.POST("/api/image", middleware.ImageUploadPermissionCheck(), controller.UploadImage)
 	router.GET("/api/notice", controller.GetNotice)

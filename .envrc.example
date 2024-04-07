@@ -1,0 +1,12 @@
+export APPLICATION_ENV=development
+export APPLICATION_VERSION=latest
+export HOST=localhost
+export PORT=3001
+# export PATH=
+# export VIDEOPATH=
+# export NOBROWSER=
+# export PRINTVERSION=
+# export ENABLEP2P=
+# export P2PPORT=
+# export LOGDIR=
+# export PRINTHELP=

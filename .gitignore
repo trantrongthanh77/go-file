@@ -6,3 +6,4 @@ build
 *.db
 *.db-journal
 vendor/
+.envrc

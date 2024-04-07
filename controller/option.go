@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"go-file/common"
+	"go-file/common/config"
 	"go-file/model"
 	"net/http"
 
@@ -56,14 +57,14 @@ func UpdateOption(c *gin.Context) {
 	})
 }
 
-func GetStatus(c *gin.Context) {
+func GetStatus(c *gin.Context, conf *config.Config) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
 		"data": gin.H{
 			"version":     common.Version,
-			"p2p_port":    *common.P2PPort,
-			"p2p_enabled": *common.EnableP2P,
+			"p2p_port":    conf.P2PPort,
+			"p2p_enabled": conf.P2PPort,
 		},
 	})
 }

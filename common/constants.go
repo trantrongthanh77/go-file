@@ -4,12 +4,14 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	"github.com/google/uuid"
+	"go-file/common/config"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 var StartTime = time.Now()
@@ -53,19 +55,6 @@ const (
 	UserStatusDisabled = 2 // don't use 0
 )
 
-var (
-	Port         = flag.Int("port", 3000, "Specify the server listening port.")
-	Host         = flag.String("host", "", "The server's IP address or domain.")
-	Path         = flag.String("path", "", "Specify a local path to public.")
-	VideoPath    = flag.String("video", "", "Specify a folder containing videos to be made public.")
-	NoBrowser    = flag.Bool("no-browser", false, "Do not open browser automatically.")
-	PrintVersion = flag.Bool("version", false, "Print version information.")
-	EnableP2P    = flag.Bool("enable-p2p", false, "Enable peer-to-peer relay or not.")
-	P2PPort      = flag.Int("p2p-port", 9377, "Specify the P2P listening port.")
-	LogDir       = flag.String("log-dir", "", "Specify the directory for log files.")
-	PrintHelp    = flag.Bool("help", false, "Print usage information.")
-)
-
 // UploadPath Maybe override by ENV_VAR
 var UploadPath = "upload"
 var ExplorerRootPath = UploadPath
@@ -80,7 +69,7 @@ var SessionSecret = uuid.New().String()
 var SQLitePath = "go-file.db"
 
 func printHelp() {
-	fmt.Println(fmt.Sprintf("Go File %s - A simple file sharing tool.", Version))
+	fmt.Println(fmt.Printf("Go File %s - A simple file sharing tool.", Version))
 	fmt.Println("Copyright (C) 2023 JustSong. All rights reserved.")
 	fmt.Println("GitHub: https://github.com/songquanpeng/go-file")
 	fmt.Println("Usage: go-file [options]")
@@ -93,35 +82,35 @@ func printHelp() {
 	os.Exit(0)
 }
 
-func init() {
+func InitConfig(conf *config.Config) {
 	flag.Parse()
 
-	if *PrintHelp {
+	if conf.PrintHelp {
 		printHelp()
 	}
 
-	if *PrintVersion {
+	if conf.PrintVersion {
 		fmt.Println(Version)
 		os.Exit(0)
 	}
 
-	if os.Getenv("SESSION_SECRET") != "" {
-		SessionSecret = os.Getenv("SESSION_SECRET")
+	if conf.SessionSecret != "" {
+		SessionSecret = conf.SessionSecret
 	}
-	if os.Getenv("SQLITE_PATH") != "" {
-		SQLitePath = os.Getenv("SQLITE_PATH")
+	if conf.SQLitePath != "" {
+		SQLitePath = conf.SQLitePath
 	}
-	if os.Getenv("UPLOAD_PATH") != "" {
-		UploadPath = os.Getenv("UPLOAD_PATH")
+	if conf.UploadPath != "" {
+		UploadPath = conf.UploadPath
 		ExplorerRootPath = UploadPath
 		ImageUploadPath = path.Join(UploadPath, "images")
 		VideoServePath = UploadPath
 	}
-	if *Path != "" {
-		ExplorerRootPath = *Path
+	if conf.Path != "" {
+		ExplorerRootPath = conf.Path
 	}
-	if *VideoPath != "" {
-		VideoServePath = *VideoPath
+	if conf.VideoPath != "" {
+		VideoServePath = conf.VideoPath
 	}
 
 	ExplorerRootPath, _ = filepath.Abs(ExplorerRootPath)
