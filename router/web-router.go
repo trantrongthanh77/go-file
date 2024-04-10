@@ -1,13 +1,15 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-file/common"
 	"go-file/controller"
+	"go-file/externalinterface/storage"
 	"go-file/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
-func setWebRouter(router *gin.Engine) {
+func setWebRouter(router *gin.Engine, cloudinary storage.Cloudinary) {
 	router.Use(middleware.GlobalWebRateLimit())
 	// Always available
 	// All page must have username in context
@@ -20,12 +22,13 @@ func setWebRouter(router *gin.Engine) {
 	router.GET("/logout", controller.Logout)
 	router.GET("/help", middleware.ExtractUserInfo(), controller.GetHelpPage)
 
+	explorerController := controller.NewPageExplorer(cloudinary)
 	// Download files
 	fileDownloadAuth := router.Group("/")
 	fileDownloadAuth.Use(middleware.DownloadRateLimit(), middleware.FileDownloadPermissionCheck())
 	{
 		fileDownloadAuth.GET("/upload/*filepath", controller.DownloadFile)
-		fileDownloadAuth.GET("/explorer", middleware.ExtractUserInfo(), controller.GetExplorerPageOrFile)
+		fileDownloadAuth.GET("/explorer", middleware.ExtractUserInfo(), explorerController.GetExplorerPageOrFile)
 	}
 
 	imageDownloadAuth := router.Group("/")

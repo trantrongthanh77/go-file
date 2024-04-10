@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-file/common"
 	"go-file/common/config"
+	"go-file/externalinterface/storage"
 	"go-file/model"
 	"go-file/router"
 	"html/template"
@@ -61,6 +62,9 @@ func main() {
 	server := gin.Default()
 	server.SetHTMLTemplate(loadTemplate())
 
+	// init cloudinary
+	cloudStore := storage.NewCloudinary(conf)
+
 	// Initialize session store
 	var store sessions.Store
 	if common.RedisEnabled {
@@ -74,7 +78,7 @@ func main() {
 	})
 	server.Use(sessions.Sessions("session", store))
 
-	router.SetRouter(server, conf)
+	router.SetRouter(server, conf, cloudStore)
 	if conf.Host == "" {
 		ip := common.GetIp()
 		if ip != "" {

@@ -3,7 +3,7 @@ let hiddenTextArea = undefined;
 function showUploadModal() {
     if (location.href.split('/')[3].startsWith("explorer")) {
         let path = getPathParam();
-        document.getElementById('uploadFileDialogTitle').innerText = `上传文件到 "${path}"`;
+        document.getElementById('uploadFileDialogTitle').innerText = `Upload files to "${path}"`;
     }
     showModal('uploadModal');
 }
@@ -55,7 +55,7 @@ function deleteFile(id, link) {
                 showMessage(data.message, true);
             } else {
                 document.getElementById("file-" + id).style.display = 'none';
-                showToast(`文件删除成功：${link}`)
+                showToast(`File deleted successfully: ${link}`)
             }
         })
     });
@@ -79,7 +79,7 @@ function deleteImage() {
         res.json().then(function (data) {
             if (data.success) {
                 e.value = "";
-                showToast("图片已成功删除");
+                showToast("Image deleted successfully");
             } else {
                 showToast(data.message, "danger");
             }
@@ -90,17 +90,17 @@ function deleteImage() {
 
 function updateDownloadCounter(id) {
     let e = document.getElementById(id);
-    let n = parseInt(e.innerText.replace("次下载", ""));
-    e.innerText = `${n + 1} 次下载`;
+    let n = parseInt(e.innerText.replace("Downloads", ""));
+    e.innerText = `${n + 1} downloads`;
 }
 
 function onFileInputChange() {
     let prompt;
     let files = document.getElementById('fileInput').files;
     if (files.length === 1) {
-        prompt = '已选择文件: ' + files[0].name;
+        prompt = 'File selected: ' + files[0].name;
     } else {
-        prompt = `已选择 ${files.length} 个文件`;
+        prompt = `Chosen ${files.length} files`;
     }
     document.getElementById('uploadFileDialogTitle').innerText = prompt;
 }
@@ -135,16 +135,16 @@ function uploadFile() {
     }
     formData.append("path", path);
 
-    fileUploadTitle.innerText = `正在上传 ${files.length} 个文件`;
+    fileUploadTitle.innerText = `Uploading ${files.length} files`;
 
     let fileUploader = new XMLHttpRequest();
     fileUploader.upload.addEventListener("progress", ev => {
         let percent = (ev.loaded / ev.total) * 100;
         fileUploadProgress.value = Math.round(percent);
-        fileUploadDetail.innerText = `处理中 ${byte2mb(ev.loaded)} MB / ${byte2mb(ev.total)} MB...`
+        fileUploadDetail.innerText = `Processing ${byte2mb(ev.loaded)} MB / ${byte2mb(ev.total)} MB...`
     }, false);
     fileUploader.addEventListener("load", ev => {
-        fileUploadTitle.innerText = `已上传 ${files.length} 个文件`;
+        fileUploadTitle.innerText = `Uploaded ${files.length} files`;
         if (fileUploader.status === 403) {
             location.href = "/login";
         } else {
@@ -158,12 +158,12 @@ function uploadFile() {
         if (fileUploader.status === 403) {
             location.href = "/login";
         } else {
-            fileUploadTitle.innerText = `文件上传失败`;
+            fileUploadTitle.innerText = `File upload failed`;
         }
         console.error(ev);
     }, false);
     fileUploader.addEventListener("abort", ev => {
-        fileUploadTitle.innerText = `文件上传已终止`;
+        fileUploadTitle.innerText = `File upload terminated`;
     }, false);
     fileUploader.open("POST", "/api/file");
     fileUploader.send(formData);
@@ -176,7 +176,7 @@ function dropHandler(ev) {
 }
 
 function dragOverHandler(ev) {
-    document.getElementById('uploadFileDialogTitle').innerText = "释放文件至此对话框";
+    document.getElementById('uploadFileDialogTitle').innerText = "Release file to this dialog";
     ev.preventDefault();
 }
 
@@ -190,7 +190,7 @@ function uploadImage() {
     document.getElementById("promptBox").style.display = "block";
     let imageUploadProgress = document.getElementById('imageUploadProgress');
     let imageUploadStatus = document.getElementById('imageUploadStatus');
-    imageUploadStatus.innerText = "上传中..."
+    imageUploadStatus.innerText = "uploading..."
 
     let files = document.getElementById('fileInput').files;
     let formData = new FormData();
@@ -208,17 +208,17 @@ function uploadImage() {
     fileUploader.addEventListener("load", ev => {
         // Uploading is done.
         if (fileUploader.status === 200) {
-            imageUploadStatus.innerText = "文件上传成功";
+            imageUploadStatus.innerText = "File uploaded successfully";
         } else if (fileUploader.status === 403) {
             location.href = "/login";
         }
     }, false);
     fileUploader.addEventListener("error", ev => {
-        imageUploadStatus.innerText = "文件上传失败";
+        imageUploadStatus.innerText = "File upload failed";
         console.error(ev);
     }, false);
     fileUploader.addEventListener("abort", ev => {
-        imageUploadStatus.innerText = "文件上传终止";
+        imageUploadStatus.innerText = "File upload aborted";
     }, false);
     fileUploader.addEventListener("readystatechange", ev => {
         if (fileUploader.readyState === 4) {
@@ -236,12 +236,12 @@ function uploadImage() {
                     </div>
                     <div class="control">
                         <a class="button is-light" onclick="copyText('${url}')">
-                            复制链接
+                            Copy Link
                         </a>
                     </div>
                     <div class="control">
                         <a class="button is-light" onclick="copyText('![${filename}](${url})')">
-                            复制 Markdown 代码
+                            Copy Markdown code
                         </a>
                     </div>
                 </div>
@@ -290,7 +290,7 @@ function copyLink(link) {
     let url = window.location.origin + link;
     url = decodeURI(url);
     copyText(url);
-    showToast(`已复制：${url}`, 'success');
+    showToast(`Copied: ${url}`, 'success');
 }
 
 function toLocalTime(str) {
@@ -335,16 +335,16 @@ async function loadOptions() {
                 <label class="label">${key}</label>
                 <div class="field has-addons">
                     <p class="control is-expanded">
-                        <input class="input" id="inputOption${key}" type="text" placeholder="请输入新的配置" value="${value}">
+                        <input class="input" id="inputOption${key}" type="text" placeholder="Please enter new configuration" value="${value}">
                     </p>
                     <p class="control">
-                        <a class="button" onclick="updateOption('${key}', 'inputOption${key}')">提交</a>
+                        <a class="button" onclick="updateOption('${key}', 'inputOption${key}')">Submit</a>
                     </p>
                 </div>
             </div>`;
         }
     } else {
-        html = `<p>选项加载失败：${result.message}</p>`
+        html = `<p>Options loading failed:${result.message}</p>`
     }
     tab.innerHTML = html;
 }
@@ -364,9 +364,9 @@ async function updateOption(key, inputElementId, originValue = "") {
     });
     let result = await response.json();
     if (result.success) {
-        showToast(`更新成功`, "success");
+        showToast(`Update completed`, "success");
     } else {
-        showToast(`更新失败：${result.message}`, "danger");
+        showToast(`Update failed: ${result.message}`, "danger");
         if (originValue !== "") {
             inputElement.value = originValue;
         }
@@ -388,9 +388,9 @@ async function updateUser(key, inputElementId) {
     });
     let result = await response.json();
     if (result.success) {
-        showToast(`更新信息成功`, "success");
+        showToast(`Information updated successfully`, "success");
     } else {
-        showToast(`更新信息失败：${result.message}`, "danger");
+        showToast(`Failed to update information: ${result.message}`, "danger");
     }
 }
 
@@ -413,9 +413,9 @@ async function createUser() {
     });
     let result = await response.json();
     if (result.success) {
-        showToast(`添加用户成功`, "success");
+        showToast(`Add user successfully`, "success");
     } else {
-        showToast(`添加用户失败：${result.message}`, "danger");
+        showToast(`Failed to add user: ${result.message}`, "danger");
     }
 }
 
@@ -437,9 +437,9 @@ async function manageUser() {
     });
     let result = await response.json();
     if (result.success) {
-        showToast(`操作成功`, "success");
+        showToast(`Successful operation`, "success");
     } else {
-        showToast(`操作失败：${result.message}`, "danger");
+        showToast(`Operation failed: ${result.message}`, "danger");
     }
 }
 
@@ -452,9 +452,9 @@ async function generateNewToken() {
     });
     let result = await response.json();
     if (result.success) {
-        showToast(`Token 已重置为：${result.data}`, "success");
+        showToast(`Token reset to: ${result.data}`, "success");
     } else {
-        showToast(`操作失败：${result.message}`, "danger");
+        showToast(`Operation failed: ${result.message}`, "danger");
     }
 }
 
