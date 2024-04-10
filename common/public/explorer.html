@@ -12,13 +12,18 @@
                 </div>
             </article>
             {{template "progress"}}
+            <a href="/explorer" class="breadcrumb">Home</a>
+            {{range $index, $path := .paths}}
+            <span class="breadcrumb">></span>
+            <a href="{{index $.pathLinks $index}}" class="breadcrumb">{{$path}}</a>
+            {{end}}
             <div class="box">
                 <div class="table-container">
                     <table class="table is-hoverable is-fullwidth" style="min-width: 700px">
                         <thead>
                         <tr>
-                            <th style="width:62%">Name</th>
-                            <th style="width:8%">Operate</th>
+                            <th style="width:58%">Name</th>
+                            <th style="width:12%">Operate</th>
                             <th style="width:10%">File size</th>
                             <th style="width:20%">Update time</th>
                         </tr>

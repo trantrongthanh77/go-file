@@ -25,6 +25,7 @@ type Config struct {
 	LogDir                string         `envconfig:"LOG_DIR" default:""`
 	GinMode               string         `envconfig:"GIN_MODE" default:""`
 	RedisConnectionString string         `envconfig:"REDIS_CONN_STRING" default:""`
+	CloudinaryURL         string         `envconfig:"CLOUDINARY_URL" default:""`
 }
 
 func FromEnv(conf *Config) error {

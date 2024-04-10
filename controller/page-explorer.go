@@ -4,62 +4,109 @@ import (
 	"context"
 	"encoding/json"
 	"go-file/common"
+	"go-file/externalinterface/storage"
 	"go-file/model"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetExplorerPageOrFile(c *gin.Context) {
-	path := c.DefaultQuery("path", "/")
+type PageExplorerController struct {
+	GetExplorerPageOrFile (*gin.Context)
+}
+
+type PageExplorerControllerImpl struct {
+	cloudinary storage.Cloudinary
+}
+
+func NewPageExplorer(cloud storage.Cloudinary) *PageExplorerControllerImpl {
+	return &PageExplorerControllerImpl{
+		cloudinary: cloud,
+	}
+}
+
+func (c *PageExplorerControllerImpl) GetExplorerPageOrFile(ctx *gin.Context) {
+	path := ctx.DefaultQuery("path", "/")
 	path, _ = url.PathUnescape(path)
 
-	fullPath := filepath.Join(common.ExplorerRootPath, path)
-	if !strings.HasPrefix(fullPath, common.ExplorerRootPath) {
-		// We may being attacked!
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  "Only subdirectories of the specified folder can be accessed",
-			"option":   common.OptionMap,
-			"username": c.GetString("username"),
+	folders := c.cloudinary.GetSubFolder(path)
+	assets := c.cloudinary.GetAssets(path)
+	files := make([]model.LocalFile, 0)
+	for _, folder := range folders.Folders {
+		files = append(files, model.LocalFile{
+			Name:         folder.Name,
+			Link:         "explorer?path=" + url.QueryEscape(folder.Path),
+			Size:         "",
+			IsFolder:     true,
+			ModifiedTime: "",
 		})
-		return
 	}
-	root, err := os.Stat(fullPath)
-	if err != nil {
-		c.HTML(http.StatusBadRequest, "error.html", gin.H{
-			"message":  "An error occurred while processing the path, please confirm that the path is correct",
-			"option":   common.OptionMap,
-			"username": c.GetString("username"),
+	for _, asset := range assets.Assets {
+		files = append(files, model.LocalFile{
+			Name:         asset.Filename + "." + asset.Format,
+			Link:         asset.SecureURL,
+			Size:         common.Bytes2Size(int64(asset.Bytes)),
+			IsFolder:     false,
+			ModifiedTime: asset.CreatedAt.String()[:19],
 		})
-		return
-	}
-	if root.IsDir() {
-		localFilesPtr, readmeFileLink, err := getData(path, fullPath)
-		if err != nil {
-			c.HTML(http.StatusBadRequest, "error.html", gin.H{
-				"message":  err.Error(),
-				"option":   common.OptionMap,
-				"username": c.GetString("username"),
-			})
-			return
-		}
 
-		c.HTML(http.StatusOK, "explorer.html", gin.H{
-			"message":        "",
-			"option":         common.OptionMap,
-			"username":       c.GetString("username"),
-			"files":          localFilesPtr,
-			"readmeFileLink": readmeFileLink,
-		})
-	} else {
-		c.File(filepath.Join(common.ExplorerRootPath, path))
 	}
+
+	// fullPath := filepath.Join(common.ExplorerRootPath, path)
+	// if !strings.HasPrefix(fullPath, common.ExplorerRootPath) {
+	// 	// We may being attacked!
+	// 	ctx.HTML(http.StatusBadRequest, "error.html", gin.H{
+	// 		"message":  "Only subdirectories of the specified folder can be accessed",
+	// 		"option":   common.OptionMap,
+	// 		"username": ctx.GetString("username"),
+	// 	})
+	// 	return
+	// }
+	// root, err := os.Stat(fullPath)
+	// if err != nil {
+	// 	ctx.HTML(http.StatusBadRequest, "error.html", gin.H{
+	// 		"message":  "An error occurred while processing the path, please confirm that the path is correct",
+	// 		"option":   common.OptionMap,
+	// 		"username": ctx.GetString("username"),
+	// 	})
+	// 	return
+	// }
+	// if root.IsDir() {
+	// _, readmeFileLink, err := getData(path, fullPath)
+	// if err != nil {
+	// 	ctx.HTML(http.StatusBadRequest, "error.html", gin.H{
+	// 		"message":  err.Error(),
+	// 		"option":   common.OptionMap,
+	// 		"username": ctx.GetString("username"),
+	// 	})
+	// 	return
+	// }
+	var pathLinks []string
+	var paths []string
+	if path != "/" {
+		paths = strings.Split(path, "/")
+		pathLinks = make([]string, len(paths))
+		for i := 0; i < len(paths); i++ {
+			pathLinks[i] = "explorer?path=" + strings.Join(paths[:i+1], "/")
+		}
+	}
+
+	ctx.HTML(http.StatusOK, "explorer.html", gin.H{
+		"message":        "",
+		"option":         common.OptionMap,
+		"username":       ctx.GetString("username"),
+		"files":          files,
+		"readmeFileLink": "",
+		"pathLinks":      pathLinks,
+		"paths":          paths,
+	})
+	// } else {
+	// 	ctx.File(filepath.Join(common.ExplorerRootPath, path))
+	// }
 }
 
 func getDataFromFS(path string, fullPath string) (localFilesPtr *[]model.LocalFile, readmeFileLink string, err error) {
