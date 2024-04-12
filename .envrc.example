@@ -2,6 +2,7 @@ export APPLICATION_ENV=development
 export APPLICATION_VERSION=latest
 export HOST=localhost
 export PORT=3001
+export CLOUDINARY_URL=
 # export PATH=
 # export VIDEOPATH=
 # export NOBROWSER=
