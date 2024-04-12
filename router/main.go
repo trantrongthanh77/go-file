@@ -12,6 +12,6 @@ import (
 func SetRouter(router *gin.Engine, conf *config.Config, cloudinary storage.Cloudinary) {
 	router.Use(middleware.AllStat())
 	setWebRouter(router, cloudinary)
-	setApiRouter(router, conf)
+	setApiRouter(router, conf, cloudinary)
 	router.NoRoute(controller.Get404Page)
 }
