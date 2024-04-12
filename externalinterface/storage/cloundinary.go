@@ -8,11 +8,13 @@ import (
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/admin"
 	"github.com/cloudinary/cloudinary-go/v2/api/admin/search"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 type Cloudinary interface {
 	GetSubFolder(parent string) *admin.FoldersResult
 	GetAssets(path string) *admin.SearchResult
+	UpdateAsset(asset interface{}, params uploader.UploadParams) (*uploader.UploadResult, error)
 }
 
 type CloudinaryImpl struct {
@@ -51,4 +53,12 @@ func (c *CloudinaryImpl) GetAssets(path string) *admin.SearchResult {
 		fmt.Println("error", err)
 	}
 	return asset
+}
+
+func (c *CloudinaryImpl) UpdateAsset(asset interface{}, params uploader.UploadParams) (*uploader.UploadResult, error) {
+	result, err := c.cloundinary.Upload.Upload(c.ctx, asset, params)
+	if err != nil {
+		fmt.Println("error", err)
+	}
+	return result, err
 }
