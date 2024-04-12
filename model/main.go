@@ -1,11 +1,12 @@
 package model
 
 import (
+	"go-file/common"
+	"go-file/common/config"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"go-file/common"
-	"os"
 )
 
 var DB *gorm.DB
@@ -26,10 +27,10 @@ func CountTable(tableName string) (num int) {
 	return
 }
 
-func InitDB() (db *gorm.DB, err error) {
-	if os.Getenv("SQL_DSN") != "" {
+func InitDB(conf *config.Config) (db *gorm.DB, err error) {
+	if conf.SqlDNS != "" {
 		// Use MySQL
-		db, err = gorm.Open("mysql", os.Getenv("SQL_DSN"))
+		db, err = gorm.Open("mysql", conf.SqlDNS)
 	} else {
 		// Use SQLite
 		db, err = gorm.Open("sqlite3", common.SQLitePath)

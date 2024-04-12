@@ -26,6 +26,7 @@ type Config struct {
 	GinMode               string         `envconfig:"GIN_MODE" default:""`
 	RedisConnectionString string         `envconfig:"REDIS_CONN_STRING" default:""`
 	CloudinaryURL         string         `envconfig:"CLOUDINARY_URL" default:""`
+	SqlDNS                string         `envconfig:"SQL_DSN" default:""`
 }
 
 func FromEnv(conf *Config) error {
