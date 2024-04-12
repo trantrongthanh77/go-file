@@ -38,7 +38,7 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	// Initialize SQL Database
-	db, err := model.InitDB()
+	db, err := model.InitDB(conf)
 	if err != nil {
 		common.FatalLog(err)
 	}
