@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"go-file/common"
 	"go-file/common/config"
 
@@ -28,6 +29,7 @@ func CountTable(tableName string) (num int) {
 }
 
 func InitDB(conf *config.Config) (db *gorm.DB, err error) {
+	fmt.Println("sqldns", conf.SqlDNS)
 	if conf.SqlDNS != "" {
 		// Use MySQL
 		db, err = gorm.Open("mysql", conf.SqlDNS)
